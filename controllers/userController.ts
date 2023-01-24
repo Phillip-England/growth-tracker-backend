@@ -1,8 +1,10 @@
 
-const UserModel = require('../models/userModel')
+import { PrismaClient } from "@prisma/client"
+import UserModel from "../models/userModel"
+// const UserModel = require('../models/userModel')
 
 
-const createUser = async (req, res) => {
+export const createUser = async (req: any, res: any) => {
   try {
     const {username, password, email} = req.body
     const user = new UserModel(username, password, email)
@@ -13,7 +15,8 @@ const createUser = async (req, res) => {
       "email": user.email
     })
   } catch (err) {
-    res.status(400).json({"message": err.message})
+    let result = (err as Error).message
+    res.status(400).json({"message": result})
   }
 }
 
