@@ -41,6 +41,10 @@ export const createUser = async (req: any, res: any) => {
   } finally {
 
     await prisma.$disconnect()
-    
+
   }
+}
+
+export const getUser = async (req: any, res: any) => {
+  res.json({"message": req.params.id})
 }
