@@ -7,6 +7,10 @@ export default class UserModel {
   password: string
   email: string
 
+  usernameOptions?: ValidationOptions
+  passwordOptions?: ValidationOptions
+  emailOptions?: ValidationOptions
+
   constructor(username: string, password: string, email: string) {
     this.username = username
     this.password = password
@@ -15,7 +19,7 @@ export default class UserModel {
 
   async validate() { 
 
-    let usernameOptions: ValidationOptions = {
+    this.usernameOptions = {
       stringName: "Username",
       required: true,
       maxLength: 32,
@@ -24,7 +28,7 @@ export default class UserModel {
       toLowerCase: true
     }
 
-    let passwordOptions: ValidationOptions = {
+    this.passwordOptions = {
       stringName: "Password",
       required: true,
       minLength: 8,
@@ -36,15 +40,15 @@ export default class UserModel {
       hasSymbol: true
     }
     
-    let emailOptions: ValidationOptions = {
+    this.emailOptions = {
       stringName: "Email",
       required: true,
       isEmail: true,
     }
 
-    let usernameValidator: Validator = new Validator(usernameOptions)
-    let passwordValidator: Validator = new Validator(passwordOptions)
-    let emailValidator = new Validator(emailOptions)
+    let usernameValidator: Validator = new Validator(this.usernameOptions)
+    let passwordValidator: Validator = new Validator(this.passwordOptions)
+    let emailValidator = new Validator(this.emailOptions)
 
     this.username = await usernameValidator.validate(this.username)
     this.password = await passwordValidator.validate(this.password)
