@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "windows", "debian-openssl-1.1.x"] // required to work in docker | client was built on windows, but is running in debian
 }
 
 datasource db {
