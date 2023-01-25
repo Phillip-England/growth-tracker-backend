@@ -1,8 +1,16 @@
 import express from 'express'
-import { createUser, getUser } from '../controllers/userController'
+
+import { authUser } from '../middleware/authUser'
+
+import { createUser } from '../controllers/user/createUser'
+import { getUser } from '../controllers/user/getUser'
+import { loginUser } from '../controllers/user/loginUser'
 
 const router = express.Router()
+
 router.post('/', createUser)
-router.get('/:id', getUser)
+router.post('/login', loginUser)
+
+router.get('/get/:id', authUser, getUser)
 
 module.exports = router

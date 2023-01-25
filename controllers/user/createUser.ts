@@ -1,6 +1,7 @@
 
 import { PrismaClient } from "@prisma/client"
-import UserModel from "../models/userModel"
+import UserModel from "../../models/userModel"
+const jwt = require('jsonwebtoken')
 const prisma = new PrismaClient()
 
 export const createUser = async (req: any, res: any) => {
@@ -26,12 +27,14 @@ export const createUser = async (req: any, res: any) => {
           email: user.email
       }})
 
-    res.status(200).json({
-      "id": prismaUser.id,
-      "username": prismaUser.username,
-      "password": prismaUser.password,
-      "email": prismaUser.email
-    })
+    // let token = jwt.sign({
+    //   "data": prismaUser.id,
+    //   "exp": Math.floor(Date.now() / 1000) + (60 * 60)
+    // }, process.env.JWT_SECRET)
+
+    // res.cookie("token", token)
+
+    res.status(200).json({"message": "User created!"})
 
   } catch (err) {
 
@@ -45,6 +48,3 @@ export const createUser = async (req: any, res: any) => {
   }
 }
 
-export const getUser = async (req: any, res: any) => {
-  res.json({"message": req.params.id})
-}
