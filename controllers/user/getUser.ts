@@ -1,11 +1,8 @@
 
 
 export const getUser = async (req: any, res: any) => {
-
   try {
-
-    res.json({"message": req.params.id})
-    
+    res.status(200).json({"message": "hit"})
   } catch {
 
   }
