@@ -22,7 +22,7 @@ export const createUser = async (req: any, res: any) => {
           password: user.password,
           email: user.email
       }})
-    res.status(201).json({"message": "User created"})
+    res.status(201).json({"message": "success"})
   } catch (err) {
     let result = (err as Error).message
     res.status(400).json({"error": result})

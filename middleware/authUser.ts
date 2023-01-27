@@ -53,11 +53,6 @@ export const authUser = async (req: any, res: any, next: any) => {
       req.user = prismaUser
     }
 
-    if (!req.signedCookies.token && !req.signedCookies.refresh) {
-      res.status(303).json({"message": "Session timed out"})
-    }
-
-
     next()
   } catch (err) {
     let result = (err as Error).message

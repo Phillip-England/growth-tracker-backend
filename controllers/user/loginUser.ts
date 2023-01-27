@@ -4,8 +4,6 @@ const prisma = new PrismaClient()
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-
-
 export const loginUser = async (req: any, res: any) => {
   try {
     const {username, password} = req.body
@@ -30,7 +28,7 @@ export const loginUser = async (req: any, res: any) => {
       httpOnly: true,
       signed: true,
     })
-    res.status(200).json({"message": "User logged in"})
+    res.status(200).json({"message": "success"})
   } catch (err) {
     let result = (err as Error).message
     res.status(400).json({"error": result})
