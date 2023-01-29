@@ -1,5 +1,6 @@
 
 import { PrismaClient } from "@prisma/client"
+import { setUserCookies } from "../../lib/cookies"
 import UserModel from "../../models/userModel"
 const prisma = new PrismaClient()
 
@@ -22,7 +23,8 @@ export const createUser = async (req: any, res: any) => {
           password: user.password,
           email: user.email
       }})
-    res.status(201).json({"message": `${prismaUser.id}`})
+    setUserCookies(res, prismaUser.id)
+    res.status(201).json({"message": `User created`})
   } catch (err) {
     let result = (err as Error).message
     res.status(400).json({"error": result})
