@@ -53,9 +53,13 @@ export const authUser = async (req: any, res: any, next: any) => {
       req.user = prismaUser
     }
 
+    if (!req.signedCookies.token && !req.signedCookies.refresh) {
+      throw new Error("Unauthorized")
+    }
+
     next()
   } catch (err) {
     let result = (err as Error).message
-    res.status(401).json({"message": "Unauthorized"})
+    res.status(401).json({"message": result})
   }
 }

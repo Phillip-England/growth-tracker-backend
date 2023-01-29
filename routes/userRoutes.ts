@@ -8,9 +8,9 @@ import { loginUser } from '../controllers/user/loginUser'
 
 const router = express.Router()
 
-router.post('/', createUser)
+router.post('/create', createUser)
 router.post('/login', loginUser)
 
-router.get('/get/:id', authUser, getUser)
+router.get('/get', authUser, getUser)
 
 module.exports = router
