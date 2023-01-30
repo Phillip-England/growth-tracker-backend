@@ -1,4 +1,3 @@
-// const Validator = require('../lib/validator')
 import { Validator, ValidationOptions } from '../lib/validator'
 
 export default class UserModel {

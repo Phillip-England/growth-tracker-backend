@@ -1,14 +1,12 @@
 
 import { PrismaClient } from "@prisma/client"
-import { setUserCookies } from "../../lib/cookies"
 const prisma = new PrismaClient()
 const bcryptjs = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+import { setUserJwt } from '../../lib/cookies'
 
 export const loginUser = async (req: any, res: any) => {
   try {
     const {username, password} = req.body
-    console.log(username, password)
     const prismaUser = await prisma.user.findFirst({
       where: {
         username: username
@@ -21,8 +19,8 @@ export const loginUser = async (req: any, res: any) => {
     if (!validPassword) {
       throw new Error("Invalid credentials")
     }
-    setUserCookies(res, prismaUser.id)
-    res.status(200).json({"message": "success"})
+    setUserJwt(res, prismaUser.id)
+    res.status(200).json({"message": `Logged in`})
   } catch (err) {
     let result = (err as Error).message
     res.status(400).json({"error": result})

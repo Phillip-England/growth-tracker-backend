@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 import { PrismaClient } from "@prisma/client"
+import { setUserJwt, setUserRefresh } from "../lib/cookies"
 const prisma = new PrismaClient()
 
 export const authUser = async (req: any, res: any, next: any) => {
@@ -7,11 +8,6 @@ export const authUser = async (req: any, res: any, next: any) => {
 
     if (req.signedCookies.token && !req.signedCookies.refresh) {
       const userId = jwt.verify(req.signedCookies.token, process.env.JWT_SECRET)
-      res.cookie("refresh", req.signedCookies.token, {
-        maxAge: 1000*60*45,
-        httpOnly: true,
-        signed: true,
-      })
       const prismaUser = await prisma.user.findUnique({
         where: { 
           id: userId.data 
@@ -23,22 +19,17 @@ export const authUser = async (req: any, res: any, next: any) => {
           email: true 
         }
       })
-      req.user = prismaUser
+      if (prismaUser) {
+        setUserRefresh(res, prismaUser.id)
+        req.user = prismaUser
+      } else {
+        res.status(500).json({'message': 'Db access failed'})
+      }
     }
 
     if (!req.signedCookies.token && req.signedCookies.refresh) {
-      const userId = jwt.verify(req.signedCookies.refresh, process.env.JWT_SECRET)
-      res.cookie("token", req.signedCookies.refresh, {
-        maxAge: 1000*60*30,
-        httpOnly: true,
-        signed: true,
-      })
+      const userId = jwt.verify(req.signedCookies.refresh, process.env.REFRESH_SECRET)
       res.clearCookie("refresh")
-      res.cookie("refresh", req.signedCookies.token, {
-        maxAge: 1000*60*45,
-        httpOnly: true,
-        signed: true,
-      })
       const prismaUser = await prisma.user.findUnique({
         where: { 
           id: userId.data 
@@ -50,7 +41,31 @@ export const authUser = async (req: any, res: any, next: any) => {
           email: true 
         }
       })
-      req.user = prismaUser
+      if (prismaUser) {
+        setUserJwt(res, prismaUser.id)
+        setUserRefresh(res, prismaUser.id)
+        req.user = prismaUser
+      } else {
+        res.status(500).json({'message': 'Db access failed'})
+      }
+    }
+
+    if (req.signedCookies.token && req.signedCookies.refresh) {
+      const userId = jwt.verify(req.signedCookies.token, process.env.JWT_SECRET)
+      const prismaUser = await prisma.user.findUnique({
+        where: { 
+          id: userId.data 
+        },
+        select: { 
+          password: false,
+          id: true,
+          username: true,
+          email: true 
+        }
+      })
+      if (prismaUser) {
+        req.user = prismaUser
+      }
     }
 
     if (!req.signedCookies.token && !req.signedCookies.refresh) {
@@ -58,6 +73,7 @@ export const authUser = async (req: any, res: any, next: any) => {
     }
 
     next()
+
   } catch (err) {
     let result = (err as Error).message
     res.status(401).json({"message": result})
