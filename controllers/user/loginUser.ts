@@ -6,10 +6,10 @@ import { setUserJwt } from '../../lib/cookies'
 
 export const loginUser = async (req: any, res: any) => {
   try {
-    const {username, password} = req.body
+    const {email, password} = req.body
     const prismaUser = await prisma.user.findFirst({
       where: {
-        username: username
+        email: email
       }
     })
     if (!prismaUser) {

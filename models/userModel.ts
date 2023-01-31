@@ -24,7 +24,6 @@ export default class UserModel {
       maxLength: 32,
       minLength: 5,
       okSymbols: '-_',
-      toLowerCase: true
     }
 
     this.passwordOptions = {

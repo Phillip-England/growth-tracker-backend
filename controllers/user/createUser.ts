@@ -10,13 +10,21 @@ export const createUser = async (req: any, res: any) => {
     const {username, password, email} = req.body
     const user = new UserModel(username, password, email)
     await user.validate()
-    const userExists = await prisma.user.findMany({
+    const usernameExists = await prisma.user.findMany({
       where: {
         username: user.username
       }
     })
-    if (userExists.length !== 0) {
+    if (usernameExists.length !== 0) {
       throw new Error("Username already taken")
+    }
+    const emailExists = await prisma.user.findMany({
+      where: {
+        email: user.email
+      }
+    })
+    if (emailExists.length !== 0) {
+      throw new Error("Email already taken")
     }
     const prismaUser = await prisma.user.create({ 
       data: {
