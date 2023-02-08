@@ -1,7 +1,6 @@
-import { Validator, ValidationOptions } from '../lib/validator'
+import { Validator, ValidationOptions } from "../lib/validator"
 
 export default class UserModel {
-
   username: string
   password: string
   email: string
@@ -16,14 +15,19 @@ export default class UserModel {
     this.email = email
   }
 
-  async validate() { 
-
+  async validate() {
     this.usernameOptions = {
       stringName: "Username",
       required: true,
       maxLength: 32,
       minLength: 5,
-      okSymbols: '-_',
+      okSymbols: "-_",
+    }
+
+    this.emailOptions = {
+      stringName: "Email",
+      required: true,
+      isEmail: true,
     }
 
     this.passwordOptions = {
@@ -31,29 +35,21 @@ export default class UserModel {
       required: true,
       minLength: 8,
       maxLength: 64,
-      okSymbols: '!@#$%^&*',
+      okSymbols: "!@#$%^&*",
       hash: true,
       hasUppercaseLetter: true,
       hasNumber: true,
-      hasSymbol: true
-    }
-    
-    this.emailOptions = {
-      stringName: "Email",
-      required: true,
-      isEmail: true,
+      hasSymbol: true,
     }
 
     let usernameValidator: Validator = new Validator(this.usernameOptions)
-    let passwordValidator: Validator = new Validator(this.passwordOptions)
     let emailValidator = new Validator(this.emailOptions)
+    let passwordValidator: Validator = new Validator(this.passwordOptions)
 
     this.username = await usernameValidator.validate(this.username)
-    this.password = await passwordValidator.validate(this.password)
     this.email = await emailValidator.validate(this.email)
-
+    this.password = await passwordValidator.validate(this.password)
   }
-
 }
 
 module.exports = UserModel
